@@ -1,7 +1,9 @@
-import React from 'react'
+import React from "react";
 
 export default function Home() {
   return (
-    <div>Home</div>
-  )
+    <div className="container mx-auto max-w-[1280px] pl-8 pr-8">
+      <h1>Home</h1>
+    </div>
+  );
 }
