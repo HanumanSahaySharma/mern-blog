@@ -1,11 +1,12 @@
 import bcrypt from "bcryptjs";
 import User from "../models/user.model.js";
+import { errorHandler } from "../utils/error.js";
 
-export const signUp = async (req, res) => {
+export const signUp = async (req, res, next) => {
   let { username, email, password } = req.body;
   try {
     if (!username || !email || !password || username === "" || email === "" || password === "") {
-      res.status(400).json({ message: "All fields are required." });
+      next(errorHandler(400, "All fields are required"));
     }
     const userExits = await User.findOne({ email: req.body.email });
     if (userExits) {
@@ -19,6 +20,6 @@ export const signUp = async (req, res) => {
     await newUser.save();
     res.status(200).json({ message: "Signup successfully.", success: true });
   } catch (error) {
-    res.status(500).json({ message: "Internal server error", success: false, error });
+    next(error);
   }
 };
