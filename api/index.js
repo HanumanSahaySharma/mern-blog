@@ -3,6 +3,12 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 dotenv.config();
 const app = express();
+app.use(express.json());
+
+//Import routes
+import authRoute from "./routes/auth.routes.js";
+
+app.use("/api/auth", authRoute);
 
 //Connect MongoDB to databse
 mongoose
