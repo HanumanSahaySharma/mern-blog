@@ -9,30 +9,34 @@ import Projects from "./pages/Projects";
 import Dashboard from "./pages/Dashboard";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
+import Footer from "./components/Footer";
 export default function App() {
   return (
     <Router>
       <Header />
-      <Routes>
-        <Route path="/" element={<Home />}>
-          Home
-        </Route>
-        <Route path="/about" element={<About />}>
-          About
-        </Route>
-        <Route path="/projects" element={<Projects />}>
-          Projects
-        </Route>
-        <Route path="/dashboard" element={<Dashboard />}>
-          Dashboard
-        </Route>
-        <Route path="/signin" element={<SignIn />}>
-          SignIn
-        </Route>
-        <Route path="/signup" element={<SignUp />}>
-          SignUp
-        </Route>
-      </Routes>
+      <main className="w-full bg-slate-100 main">
+        <Routes>
+          <Route path="/" element={<Home />}>
+            Home
+          </Route>
+          <Route path="/about" element={<About />}>
+            About
+          </Route>
+          <Route path="/projects" element={<Projects />}>
+            Projects
+          </Route>
+          <Route path="/dashboard" element={<Dashboard />}>
+            Dashboard
+          </Route>
+          <Route path="/signin" element={<SignIn />}>
+            SignIn
+          </Route>
+          <Route path="/signup" element={<SignUp />}>
+            SignUp
+          </Route>
+        </Routes>
+      </main>
+      <Footer />
     </Router>
   );
 }
