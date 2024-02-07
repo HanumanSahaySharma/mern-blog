@@ -1,18 +1,26 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import Header from "./components/header";
+// import React Toatify
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
+// Import Components
+import Header from "./components/header";
+import Footer from "./components/Footer";
+
+// Import Pages for Routing
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Projects from "./pages/Projects";
 import Dashboard from "./pages/Dashboard";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
-import Footer from "./components/Footer";
+
 export default function App() {
   return (
     <Router>
+      <ToastContainer autoClose={3000} />
       <Header />
       <main className="w-full bg-slate-100 main">
         <Routes>

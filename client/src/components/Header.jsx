@@ -6,7 +6,7 @@ import { RiSearchLine, RiMoonLine } from "react-icons/ri";
 export default function Header() {
   const path = useLocation().pathname;
   return (
-    <header className="w-full bg-white border border-b-slate-300">
+    <header className="w-full bg-white border-b border-b-slate-300">
       <div className="container mx-auto max-w-[1480px] pl-8 pr-8">
         <div className="grid grid-cols-2 gap4 py-4">
           <div className="flex items-center gap-4">
@@ -41,7 +41,7 @@ export default function Header() {
                 </Navbar.Link>
               </Navbar.Collapse>
             </Navbar>
-            <Button as={Link} to="/signin" gradientDuoTone="pinkToOrange" pill>
+            <Button as={Link} to="/signin" outline gradientDuoTone="pinkToOrange" pill>
               Sign In
             </Button>
             <Button className="w-12 h-10 sm:inline px-0" color="light" pill>

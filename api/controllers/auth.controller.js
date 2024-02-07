@@ -18,7 +18,7 @@ export const signUp = async (req, res, next) => {
     // Save user to databse
     const newUser = new User({ username, email, password: hashedPassword });
     await newUser.save();
-    res.status(200).json({ message: "Signup successfully.", success: true });
+    res.status(201).json({ message: "Signup successfully.", success: true });
   } catch (error) {
     next(error);
   }
