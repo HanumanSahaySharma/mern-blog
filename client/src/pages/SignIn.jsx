@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Button, Label, TextInput, Alert } from "flowbite-react";
-import { Link, useNavigate } from "react-router-dom";
-import Loader from "../components/Loader";
 import { toast } from "react-toastify";
+import { Link, useNavigate } from "react-router-dom";
+import { Button, Label, TextInput, Alert } from "flowbite-react";
+import Loader from "../components/Loader";
+import { signInStart, signInSuccess, signInFailure } from "../redux/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function SignIn() {
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({});
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state) => state.user);
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -18,26 +20,20 @@ export default function SignIn() {
   };
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     if (!formData.email || !formData.password || formData.email === "" || formData.password === "") {
-      setError("All field are required");
-      setLoading(false);
+      dispatch(signInFailure("All fields are required"));
       return false;
     }
     try {
-      setLoading(true);
-      setError(null);
+      dispatch(signInStart());
       const response = await axios.post("/api/auth/signin", formData);
       if (response.data.success) {
         toast.success(response.data.message);
-        setLoading(false);
+        dispatch(signInSuccess(response.data.user));
         navigate("/");
-      } else {
-        toast.error(response.data.message);
       }
     } catch (error) {
-      setLoading(false);
-      toast.error(error.response.data.message);
+      dispatch(signInFailure(error.response.data.message));
     }
   };
   return (
@@ -55,7 +51,7 @@ export default function SignIn() {
           )}
           <div className="mb-5">
             <Label htmlFor="email" value="Email" className="mb-2 block" />
-            <TextInput id="email" type="text" onChange={handleChange} disabled={loading} />
+            <TextInput id="email" type="email" onChange={handleChange} disabled={loading} />
           </div>
           <div className="mb-5">
             <Label htmlFor="password" value="Password" className="mb-2 block" />
