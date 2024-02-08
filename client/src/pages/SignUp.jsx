@@ -7,9 +7,9 @@ import Loader from "../components/Loader";
 
 export default function SignUp() {
   const navigate = useNavigate();
+  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -19,7 +19,7 @@ export default function SignUp() {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    if (!formData.username || !formData.email || !formData.password) {
+    if (!formData.name || !formData.email || !formData.password) {
       setError("Please fill the all fields.");
       setLoading(false);
       return false;
@@ -28,17 +28,17 @@ export default function SignUp() {
       setLoading(true);
       const response = await axios.post("/api/auth/signup", formData);
       if (response.data.success) {
-        setFormData("");
         toast.success(response.data.message);
         setLoading(false);
         navigate("/signin");
       } else {
-        toast.error(response.data.message);
         setLoading(false);
+        setError(null);
+        toast.error(response.data.message);
       }
     } catch (error) {
       setLoading(false);
-      toast.error(error.message);
+      console.log(error);
     }
   };
   return (
@@ -55,16 +55,16 @@ export default function SignUp() {
             </Alert>
           )}
           <div className="mb-5">
-            <Label htmlFor="username" value="Username" className="mb-2 block" />
-            <TextInput id="username" type="text" onChange={handleChange} />
+            <Label htmlFor="name" value="Name" className="mb-2 block" />
+            <TextInput id="name" type="text" onChange={handleChange} disabled={loading} />
           </div>
           <div className="mb-5">
             <Label htmlFor="email" value="Email" className="mb-2 block" />
-            <TextInput id="email" type="email" onChange={handleChange} />
+            <TextInput id="email" type="email" onChange={handleChange} disabled={loading} />
           </div>
           <div className="mb-5">
             <Label htmlFor="password" value="Password" className="mb-2 block" />
-            <TextInput id="password" type="password" onChange={handleChange} />
+            <TextInput id="password" type="password" onChange={handleChange} disabled={loading} />
           </div>
           <Button type="submit" gradientDuoTone="pinkToOrange" pill size="lg" fullSized className="mb-5">
             {loading ? <Loader color="gray" className="mr-2" size="md" /> : "Sign Up"}
