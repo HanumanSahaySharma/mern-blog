@@ -16,6 +16,10 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    profileImage: {
+      type: String,
+      default: "https://beforeigosolutions.com/wp-content/uploads/2021/12/dummy-profile-pic-300x300-1.png",
+    },
   },
   {
     timestamps: true,

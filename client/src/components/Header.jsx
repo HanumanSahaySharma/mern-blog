@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation, useRoutes } from "react-router-dom";
-import { Button, Navbar, TextInput } from "flowbite-react";
+import { Avatar, Button, Navbar, TextInput } from "flowbite-react";
 import { RiSearchLine, RiMoonLine } from "react-icons/ri";
 
 export default function Header() {

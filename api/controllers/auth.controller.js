@@ -11,8 +11,7 @@ export const signUp = async (req, res, next) => {
       return res.status(200).json({ message: "This email is already register", success: false });
     }
     // Encrypt user password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = bcrypt.hashSync(password, salt);
+    const hashedPassword = bcrypt.hashSync(password, 10);
     // Save user to databse
     const newUser = new User({ name, email, password: hashedPassword });
     await newUser.save();
@@ -48,6 +47,47 @@ export const signIn = async (req, res, next) => {
       .cookie("access_token", token, { httpOnly: true })
       .json({ message: "Login successfully", success: true, user: { name: user.name, email: user.email } });
     //res.status(200).json({ message: "Login sucessfully", token });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const google = async (req, res, next) => {
+  let { name, email, googlePhotoUrl } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (user) {
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
+        expiresIn: "1h",
+      });
+      return res
+        .status(200)
+        .cookie("access_token", token, { httpOnly: true })
+        .json({
+          message: "SignIn successfully with google account",
+          success: true,
+          user: { name: user.name, email: user.email },
+        });
+    } else {
+      const generatedPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
+      const hashedPassword = bcrypt.hashSync(generatedPassword, 10);
+      const newUser = new User({
+        name: name.toLowerCase().split(" ").join("") + Math.random().toString(10).slice(-4),
+        email,
+        password: hashedPassword,
+        profileImage: googlePhotoUrl,
+      });
+      await newUser.save();
+      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET_KEY, { expiresIn: "1h" });
+      return res
+        .status(201)
+        .cookie("access_token", token, { httpOnly: true })
+        .json({
+          message: "SignUp successfully with google account",
+          success: true,
+          user: { name: newUser.name, email: newUser.email },
+        });
+    }
   } catch (error) {
     next(error);
   }

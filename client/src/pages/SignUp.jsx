@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Alert, Button, Label, TextInput } from "flowbite-react";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
+import OAuth from "../components/OAuth";
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -69,6 +70,7 @@ export default function SignUp() {
           <Button type="submit" gradientDuoTone="pinkToOrange" pill size="lg" fullSized className="mb-5">
             {loading ? <Loader color="gray" className="mr-2" size="md" /> : "Sign Up"}
           </Button>
+          <OAuth />
           <p>
             Have an account?{" "}
             <Link to="/signin" className="text-red-500 font-semibold">

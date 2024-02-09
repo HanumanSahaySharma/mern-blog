@@ -6,6 +6,7 @@ import { Button, Label, TextInput, Alert } from "flowbite-react";
 import Loader from "../components/Loader";
 import { signInStart, signInSuccess, signInFailure } from "../redux/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
+import OAuth from "../components/OAuth";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
@@ -60,6 +61,7 @@ export default function SignIn() {
           <Button type="submit" gradientDuoTone="pinkToOrange" pill size="lg" fullSized className="mb-5">
             {loading ? <Loader color="gray" className="mr-2" size="md" /> : "Sign In"}
           </Button>
+          <OAuth />
           <p>
             Don't have an account?{" "}
             <Link to="/signup" className="text-red-500 font-semibold">
