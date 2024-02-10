@@ -45,7 +45,11 @@ export const signIn = async (req, res, next) => {
     return res
       .status(200)
       .cookie("access_token", token, { httpOnly: true })
-      .json({ message: "Login successfully", success: true, user: { name: user.name, email: user.email } });
+      .json({
+        message: "Login successfully",
+        success: true,
+        user: { name: user.name, email: user.email, profileImage: user.profileImage },
+      });
     //res.status(200).json({ message: "Login sucessfully", token });
   } catch (error) {
     next(error);
@@ -66,7 +70,7 @@ export const google = async (req, res, next) => {
         .json({
           message: "SignIn successfully with google account",
           success: true,
-          user: { name: user.name, email: user.email },
+          user: { name: user.name, email: user.email, profileImage: user.googlePhotoUrl },
         });
     } else {
       const generatedPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
@@ -85,7 +89,7 @@ export const google = async (req, res, next) => {
         .json({
           message: "SignUp successfully with google account",
           success: true,
-          user: { name: newUser.name, email: newUser.email },
+          user: { name: newUser.name, email: newUser.email, profileImage: newUser.profileImage },
         });
     }
   } catch (error) {

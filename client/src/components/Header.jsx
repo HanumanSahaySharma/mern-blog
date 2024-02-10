@@ -1,10 +1,12 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { Link, useLocation, useRoutes } from "react-router-dom";
-import { Avatar, Button, Navbar, TextInput } from "flowbite-react";
+import { Avatar, Button, Dropdown, Navbar, TextInput } from "flowbite-react";
 import { RiSearchLine, RiMoonLine } from "react-icons/ri";
 
 export default function Header() {
   const path = useLocation().pathname;
+  const { currentUser } = useSelector((state) => state.user);
   return (
     <header className="w-full bg-white border-b border-b-slate-300">
       <div className="container mx-auto max-w-[1480px] pl-8 pr-8">
@@ -41,12 +43,26 @@ export default function Header() {
                 </Navbar.Link>
               </Navbar.Collapse>
             </Navbar>
-            <Button as={Link} to="/signin" outline gradientDuoTone="pinkToOrange" pill>
-              Sign In
-            </Button>
             <Button className="w-12 h-10 sm:inline px-0" color="light" pill>
               <RiMoonLine />
             </Button>
+            {currentUser ? (
+              <Dropdown inline size="sm" label={<Avatar rounded img={currentUser.profileImage}></Avatar>}>
+                <Dropdown.Header>
+                  <p className="font-bold mb-1">{currentUser.name}</p>
+                  <p>{currentUser.email}</p>
+                </Dropdown.Header>
+                <Link to="/dashboard?tab=profile">
+                  <Dropdown.Item>Profile</Dropdown.Item>
+                </Link>
+                <Dropdown.Divider></Dropdown.Divider>
+                <Dropdown.Item>Sign out</Dropdown.Item>
+              </Dropdown>
+            ) : (
+              <Button gradientDuoTone="pinkToOrange" pill>
+                <Link to="/signin">Sign In</Link>
+              </Button>
+            )}
           </div>
         </div>
       </div>
