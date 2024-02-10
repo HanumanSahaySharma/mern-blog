@@ -1,14 +1,17 @@
 import React from "react";
-import { useSelector } from "react-redux";
-import { Link, useLocation, useRoutes } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { Link, useLocation } from "react-router-dom";
 import { Avatar, Button, Dropdown, Navbar, TextInput } from "flowbite-react";
-import { RiSearchLine, RiMoonLine } from "react-icons/ri";
+import { RiSearchLine, RiMoonLine, RiSunLine } from "react-icons/ri";
+import { toggleTheme } from "../redux/theme/themeSlice";
 
 export default function Header() {
   const path = useLocation().pathname;
+  const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
+  const { theme } = useSelector((state) => state.theme);
   return (
-    <header className="w-full bg-white border-b border-b-slate-300">
+    <header className="w-full bg-white dark:text-white border-b border-b-slate-300 dark:bg-gray-800 dark:border-b-gray-700">
       <div className="container mx-auto max-w-[1480px] pl-8 pr-8">
         <div className="grid grid-cols-2 gap4 py-4">
           <div className="flex items-center gap-4">
@@ -29,7 +32,7 @@ export default function Header() {
             </Button>
           </div>
           <div className="flex items-center gap-2 justify-end">
-            <Navbar>
+            <Navbar className="bg-transparent dark:bg-transparent">
               <Navbar.Toggle />
               <Navbar.Collapse className="navbar-nav">
                 <Navbar.Link as={Link} to="/" active={path === "/"}>
@@ -43,8 +46,8 @@ export default function Header() {
                 </Navbar.Link>
               </Navbar.Collapse>
             </Navbar>
-            <Button className="w-12 h-10 sm:inline px-0" color="light" pill>
-              <RiMoonLine />
+            <Button className="w-12 h-10" color="light" pill onClick={() => dispatch(toggleTheme())}>
+              {theme === "dark" ? <RiSunLine size={16} /> : <RiMoonLine size={16} />}
             </Button>
             {currentUser ? (
               <Dropdown inline size="sm" label={<Avatar rounded img={currentUser.profileImage}></Avatar>}>

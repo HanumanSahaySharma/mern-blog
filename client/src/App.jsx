@@ -22,7 +22,7 @@ export default function App() {
     <Router>
       <ToastContainer autoClose={3000} />
       <Header />
-      <main className="w-full bg-slate-100 main">
+      <main className="w-full bg-slate-100 main dark:bg-gray-900 dark:text-white">
         <Routes>
           <Route path="/" element={<Home />}>
             Home

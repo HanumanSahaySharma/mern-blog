@@ -42,7 +42,7 @@ export default function SignIn() {
       <div className="mx-auto max-w-[1000px] flex items-center">
         <form
           onSubmit={(e) => handleFormSubmit(e)}
-          className="bg-white py-8 px-12 border border-slate-300 my-20 mx-auto w-full max-w-[480px] rounded-lg"
+          className="bg-white py-8 px-12 border border-slate-300 my-20 mx-auto w-full max-w-[480px] rounded-lg dark:bg-gray-800 dark:border-slate-600 dark:text-white"
         >
           <h2 className="text-2xl font-bold mb-5">Login</h2>
           {error && (
