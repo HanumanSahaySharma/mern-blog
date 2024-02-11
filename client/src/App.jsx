@@ -16,6 +16,7 @@ import Projects from "./pages/Projects";
 import Dashboard from "./pages/Dashboard";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
+import PrivateRoutes from "./components/PrivateRoutes";
 
 export default function App() {
   return (
@@ -33,8 +34,10 @@ export default function App() {
           <Route path="/projects" element={<Projects />}>
             Projects
           </Route>
-          <Route path="/dashboard" element={<Dashboard />}>
-            Dashboard
+          <Route element={<PrivateRoutes />}>
+            <Route path="/dashboard" element={<Dashboard />}>
+              Dashboard
+            </Route>
           </Route>
           <Route path="/signin" element={<SignIn />}>
             SignIn
