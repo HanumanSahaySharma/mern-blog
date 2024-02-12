@@ -70,7 +70,7 @@ export const google = async (req, res, next) => {
         .json({
           message: "SignIn successfully with google account",
           success: true,
-          user: { name: user.name, email: user.email, profileImage: user.googlePhotoUrl },
+          user: { name: user.name, email: user.email, profileImage: user.profileImage },
         });
     } else {
       const generatedPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
