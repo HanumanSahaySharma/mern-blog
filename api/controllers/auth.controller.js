@@ -40,7 +40,7 @@ export const signIn = async (req, res, next) => {
       },
       process.env.JWT_SECRET_KEY,
       {
-        expiresIn: "1h",
+        expiresIn: "1d",
       }
     );
     const { password: pass, ...rest } = user._doc;
@@ -61,7 +61,7 @@ export const google = async (req, res, next) => {
     const user = await User.findOne({ email });
     if (user) {
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
-        expiresIn: "1h",
+        expiresIn: "1d",
       });
       return res
         .status(200)
@@ -72,7 +72,8 @@ export const google = async (req, res, next) => {
           user: { username: user.username, email: user.email, profileImage: user.profileImage },
         });
     } else {
-      const generatedPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
+      const generatedPassword =
+        Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
       const hashedPassword = bcrypt.hashSync(generatedPassword, 10);
       const newUser = new User({
         username: username.toLowerCase().split(" ").join("") + Math.random().toString(10).slice(-4),
@@ -81,14 +82,18 @@ export const google = async (req, res, next) => {
         profileImage: googlePhotoUrl,
       });
       await newUser.save();
-      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET_KEY, { expiresIn: "1h" });
+      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET_KEY, { expiresIn: "1d" });
       return res
         .status(201)
         .cookie("access_token", token, { httpOnly: true })
         .json({
           message: "SignUp successfully with google account",
           success: true,
-          user: { username: newUser.username, email: newUser.email, profileImage: newUser.profileImage },
+          user: {
+            username: newUser.username,
+            email: newUser.email,
+            profileImage: newUser.profileImage,
+          },
         });
     }
   } catch (error) {

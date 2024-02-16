@@ -20,7 +20,7 @@ export default function SignUp() {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    if (!formData.name || !formData.email || !formData.password) {
+    if (!formData.username || !formData.email || !formData.password) {
       setError("Please fill the all fields.");
       setLoading(false);
       return false;
@@ -56,8 +56,8 @@ export default function SignUp() {
             </Alert>
           )}
           <div className="mb-5">
-            <Label htmlFor="name" value="Name" className="mb-2 block" />
-            <TextInput id="name" type="text" onChange={handleChange} disabled={loading} />
+            <Label htmlFor="username" value="Username" className="mb-2 block" />
+            <TextInput id="username" type="text" onChange={handleChange} disabled={loading} />
           </div>
           <div className="mb-5">
             <Label htmlFor="email" value="Email" className="mb-2 block" />
