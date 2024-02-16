@@ -1,12 +1,15 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 dotenv.config();
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 
 //Import routes
 import authRoute from "./routes/auth.routes.js";
+import userRoute from "./routes/user.routes.js";
 
 //Connect MongoDB to databse
 mongoose
@@ -21,6 +24,7 @@ app.listen(5000, () => {
 });
 
 app.use("/api/auth", authRoute);
+app.use("/api/auth/user", userRoute);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
