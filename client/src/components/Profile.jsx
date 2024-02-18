@@ -3,6 +3,7 @@ import axios from "axios";
 import { app } from "../firebase";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { Button, Label, TextInput, Alert, Modal } from "flowbite-react";
 import { getStorage, uploadBytesResumable, ref, getDownloadURL } from "firebase/storage";
 import { CircularProgressbar } from "react-circular-progressbar";
@@ -14,6 +15,7 @@ import {
   deleteUserStart,
   deleteUserSuccess,
   deleteUserFailure,
+  signoutSuccess,
 } from "../redux/user/userSlice";
 import { useDispatch } from "react-redux";
 import { AiOutlineInfoCircle } from "react-icons/ai";
@@ -22,6 +24,7 @@ import Loader from "../components/Loader";
 
 export default function Profile() {
   const profileImageRef = useRef();
+  const navigate = useNavigate();
   const { currentUser, loading, error } = useSelector((state) => state.user);
   const [imageFile, setImageFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
@@ -98,7 +101,7 @@ export default function Profile() {
       dispatch(updateFailure(error.response.data.message));
     }
   };
-  const handleDelete = async (e) => {
+  const handleDelete = async () => {
     dispatch(deleteUserStart());
     try {
       const response = await axios.delete(`/api/auth/user/delete/${currentUser._id}`);
@@ -109,6 +112,18 @@ export default function Profile() {
       }
     } catch (error) {
       dispatch(deleteUserFailure(error.response.data.message));
+    }
+  };
+  const handleSignout = async () => {
+    try {
+      const response = await axios.post("/api/auth/user/signout");
+      if (response.data.success) {
+        toast.success(response.data.message);
+        dispatch(signoutSuccess());
+        navigate("/");
+      }
+    } catch (error) {
+      console.log(error.response.data.message);
     }
   };
   return (
@@ -206,7 +221,7 @@ export default function Profile() {
           <Button outline gradientDuoTone="pinkToOrange" onClick={() => setConfirmModal(true)}>
             Delete Account
           </Button>
-          <Button outline gradientDuoTone="pinkToOrange">
+          <Button outline gradientDuoTone="pinkToOrange" onClick={handleSignout}>
             Sign Out
           </Button>
         </div>
