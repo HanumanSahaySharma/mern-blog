@@ -3,12 +3,20 @@ import axios from "axios";
 import { app } from "../firebase";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
-import { Button, Label, TextInput, Alert } from "flowbite-react";
+import { Button, Label, TextInput, Alert, Modal } from "flowbite-react";
 import { getStorage, uploadBytesResumable, ref, getDownloadURL } from "firebase/storage";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import { updateStart, updateSuccess, updateFailure } from "../redux/user/userSlice";
+import {
+  updateStart,
+  updateSuccess,
+  updateFailure,
+  deleteUserStart,
+  deleteUserSuccess,
+  deleteUserFailure,
+} from "../redux/user/userSlice";
 import { useDispatch } from "react-redux";
+import { AiOutlineInfoCircle } from "react-icons/ai";
 
 import Loader from "../components/Loader";
 
@@ -19,6 +27,7 @@ export default function Profile() {
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const [imageUploadProgess, setImageUploadProgress] = useState(null);
   const [imageUploadError, setImageUploadError] = useState(null);
+  const [showConfirmModal, setConfirmModal] = useState(false);
   const [formData, setFormData] = useState({});
   const dispatch = useDispatch();
   const handleImageUpload = (e) => {
@@ -89,7 +98,19 @@ export default function Profile() {
       dispatch(updateFailure(error.response.data.message));
     }
   };
-
+  const handleDelete = async (e) => {
+    dispatch(deleteUserStart());
+    try {
+      const response = await axios.delete(`/api/auth/user/delete/${currentUser._id}`);
+      if (response.data.success) {
+        toast.success(response.data.message);
+        dispatch(deleteUserSuccess());
+        setConfirmModal(false);
+      }
+    } catch (error) {
+      dispatch(deleteUserFailure(error.response.data.message));
+    }
+  };
   return (
     <div className="p-10 w-full">
       <div className="max-w-[540px] mx-auto w-full">
@@ -182,9 +203,35 @@ export default function Profile() {
           </Button>
         </form>
         <div className="flex justify-between">
-          <Button color="light">Delete Account</Button>
-          <Button color="light">Sign Out</Button>
+          <Button outline gradientDuoTone="pinkToOrange" onClick={() => setConfirmModal(true)}>
+            Delete Account
+          </Button>
+          <Button outline gradientDuoTone="pinkToOrange">
+            Sign Out
+          </Button>
         </div>
+        <Modal show={showConfirmModal} onClose={() => setConfirmModal(false)} popup size="md">
+          <Modal.Header />
+          <Modal.Body className="text-center">
+            <AiOutlineInfoCircle size="50" color="gray" className="mx-auto" />
+            <p className="text-2xl text-slate-500 mb-10 mt-5">
+              Are you sure want to delete this account?
+            </p>
+            <div className="flex gap-5">
+              <Button fullSized gradientDuoTone="pinkToOrange" onClick={handleDelete}>
+                Delete
+              </Button>
+              <Button
+                onClick={() => setConfirmModal(false)}
+                fullSized
+                outline
+                gradientDuoTone="pinkToOrange"
+              >
+                Cancel
+              </Button>
+            </div>
+          </Modal.Body>
+        </Modal>
       </div>
     </div>
   );
