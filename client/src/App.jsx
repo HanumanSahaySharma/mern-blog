@@ -8,15 +8,17 @@ import "react-toastify/dist/ReactToastify.css";
 // Import Components
 import Header from "./components/header";
 import Footer from "./components/Footer";
+import PrivateRoutes from "./components/PrivateRoutes";
+import OnlyAdminPrivateRoutes from "./components/OnlyAdminPrivateRoutes";
 
 // Import Pages for Routing
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Projects from "./pages/Projects";
-import Dashboard from "./pages/Dashboard";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
-import PrivateRoutes from "./components/PrivateRoutes";
+import Dashboard from "./pages/Dashboard";
+import CreatePost from "./pages/CreatePost";
 
 export default function App() {
   return (
@@ -25,26 +27,17 @@ export default function App() {
       <Header />
       <main className="w-full bg-slate-100 main dark:bg-gray-900 dark:text-white">
         <Routes>
-          <Route path="/" element={<Home />}>
-            Home
-          </Route>
-          <Route path="/about" element={<About />}>
-            About
-          </Route>
-          <Route path="/projects" element={<Projects />}>
-            Projects
-          </Route>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/projects" element={<Projects />} />
           <Route element={<PrivateRoutes />}>
-            <Route path="/dashboard" element={<Dashboard />}>
-              Dashboard
-            </Route>
+            <Route path="/dashboard" element={<Dashboard />} />
           </Route>
-          <Route path="/signin" element={<SignIn />}>
-            SignIn
+          <Route element={<OnlyAdminPrivateRoutes />}>
+            <Route path="/create-post" element={<CreatePost />} />
           </Route>
-          <Route path="/signup" element={<SignUp />}>
-            SignUp
-          </Route>
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/signup" element={<SignUp />} />
         </Routes>
       </main>
       <Footer />

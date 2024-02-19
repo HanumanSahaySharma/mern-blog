@@ -5,3 +5,19 @@
 .main {
   min-height: calc(100vh - 150px);
 }
+body {
+  height: 100vh;
+}
+.ql-editor {
+  @apply text-lg;
+}
+.dark .ql-toolbar.ql-snow {
+  @apply border-slate-500;
+}
+.dark .ql-toolbar.ql-snow .ql-formats span,
+.dark .ql-snow .ql-stroke {
+  @apply stroke-slate-300 text-slate-300;
+}
+.dark .ql-container.ql-snow {
+  @apply border-slate-500;
+}

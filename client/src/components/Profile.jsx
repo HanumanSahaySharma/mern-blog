@@ -3,7 +3,7 @@ import axios from "axios";
 import { app } from "../firebase";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Button, Label, TextInput, Alert, Modal } from "flowbite-react";
 import { getStorage, uploadBytesResumable, ref, getDownloadURL } from "firebase/storage";
 import { CircularProgressbar } from "react-circular-progressbar";
@@ -207,6 +207,8 @@ export default function Profile() {
             <TextInput id="password" type="password" onChange={handleChange} />
           </div>
           <Button
+            disabled={loading}
+            outline
             type="submit"
             gradientDuoTone="pinkToOrange"
             pill
@@ -214,15 +216,29 @@ export default function Profile() {
             fullSized
             className="mb-5"
           >
-            {loading ? <Loader color="gray" className="mr-2" size="md" /> : "Update Profile"}
+            {loading ? <Loader color="gray" className="mr-2" size="md" /> : "Update profile"}
           </Button>
+          {currentUser.isAdmin && (
+            <Button
+              as={Link}
+              to="/create-post"
+              type="button"
+              gradientDuoTone="pinkToOrange"
+              pill
+              size="lg"
+              fullSized
+              className="mb-5"
+            >
+              Create a post
+            </Button>
+          )}
         </form>
         <div className="flex justify-between">
           <Button outline gradientDuoTone="pinkToOrange" onClick={() => setConfirmModal(true)}>
-            Delete Account
+            Delete account
           </Button>
           <Button outline gradientDuoTone="pinkToOrange" onClick={handleSignout}>
-            Sign Out
+            Sign out
           </Button>
         </div>
         <Modal show={showConfirmModal} onClose={() => setConfirmModal(false)} popup size="md">
