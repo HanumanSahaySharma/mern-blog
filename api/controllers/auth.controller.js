@@ -35,8 +35,7 @@ export const signIn = async (req, res, next) => {
     const token = jwt.sign(
       {
         id: user._id,
-        username: user.username,
-        email: user.email,
+        isAdmin: user.isAdmin,
       },
       process.env.JWT_SECRET_KEY,
       {
@@ -60,17 +59,15 @@ export const google = async (req, res, next) => {
   try {
     const user = await User.findOne({ email });
     if (user) {
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
+      const token = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_SECRET_KEY, {
         expiresIn: "1d",
       });
-      return res
-        .status(200)
-        .cookie("access_token", token, { httpOnly: true })
-        .json({
-          message: "SignIn successfully with google account",
-          success: true,
-          user: { username: user.username, email: user.email, profileImage: user.profileImage },
-        });
+      const { password: pass, ...rest } = user._doc;
+      return res.status(200).cookie("access_token", token, { httpOnly: true }).json({
+        message: "SignIn successfully with google account",
+        success: true,
+        user: rest,
+      });
     } else {
       const generatedPassword =
         Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
@@ -82,7 +79,11 @@ export const google = async (req, res, next) => {
         profileImage: googlePhotoUrl,
       });
       await newUser.save();
-      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET_KEY, { expiresIn: "1d" });
+      const token = jwt.sign(
+        { id: newUser._id, isAdmin: newUser.isAdmin },
+        process.env.JWT_SECRET_KEY,
+        { expiresIn: "1d" }
+      );
       const { password: pass, ...rest } = newUser._doc;
       return res.status(201).cookie("access_token", token, { httpOnly: true }).json({
         message: "SignUp successfully with google account",
