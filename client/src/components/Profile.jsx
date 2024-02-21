@@ -28,7 +28,7 @@ export default function Profile() {
   const { currentUser, loading, error } = useSelector((state) => state.user);
   const [imageFile, setImageFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
-  const [imageUploadProgess, setImageUploadProgress] = useState(null);
+  const [imageUploadProgress, setImageUploadProgress] = useState(null);
   const [imageUploadError, setImageUploadError] = useState(null);
   const [showConfirmModal, setConfirmModal] = useState(false);
   const [formData, setFormData] = useState({});
@@ -142,10 +142,10 @@ export default function Profile() {
             onClick={() => profileImageRef.current.click()}
             className="relative w-40 h-40 mx-auto mb-5 rounded-full shadow-xl"
           >
-            {imageUploadProgess && imageUploadProgess < 100 && (
+            {imageUploadProgress && imageUploadProgress < 100 && (
               <CircularProgressbar
-                value={imageUploadProgess}
-                text={`${imageUploadProgess}%`}
+                value={imageUploadProgress}
+                text={`${imageUploadProgress}%`}
                 strokeWidth={4}
                 styles={{
                   root: {
@@ -169,7 +169,7 @@ export default function Profile() {
               src={imageFileUrl || currentUser.profileImage}
               alt="user profile image"
               className={`w-40 h-40 rounded-full border-4 border-slate-300 dark:border-slate-400 object-cover ${
-                imageUploadProgess && imageUploadProgess < 100 && "opacity-60"
+                imageUploadProgress && imageUploadProgress < 100 && "opacity-60"
               }`}
             />
           </div>

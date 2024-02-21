@@ -9,15 +9,19 @@ body {
   height: 100vh;
 }
 .ql-editor {
-  @apply text-lg;
+  @apply text-lg rounded-bl rounded-br;
 }
+.ql-toolbar.ql-snow {
+  @apply rounded-tl rounded-tr;
+}
+
 .dark .ql-toolbar.ql-snow {
-  @apply border-slate-500;
+  @apply border-slate-600;
 }
 .dark .ql-toolbar.ql-snow .ql-formats span,
 .dark .ql-snow .ql-stroke {
   @apply stroke-slate-300 text-slate-300;
 }
 .dark .ql-container.ql-snow {
-  @apply border-slate-500;
+  @apply border-slate-600;
 }
