@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Avatar, Button, Dropdown, Navbar, TextInput } from "flowbite-react";
-import { RiSearchLine, RiMoonLine, RiSunLine } from "react-icons/ri";
+import { LuSearch, LuMoon, LuSun } from "react-icons/lu";
 import { toggleTheme } from "../redux/theme/themeSlice";
 import { signoutSuccess } from "../redux/user/userSlice";
 
@@ -41,15 +41,10 @@ export default function Header() {
               Bloggy
             </Link>
             <form className="hidden lg:block w-2/4">
-              <TextInput
-                className="w-full"
-                type="text"
-                placeholder="Search..."
-                rightIcon={RiSearchLine}
-              />
+              <TextInput className="w-full" type="text" placeholder="Search..." rightIcon={LuSearch} />
             </form>
             <Button className="w-12 h-10 block lg:hidden" color="gray" pill>
-              <RiSearchLine />
+              <LuSearch />
             </Button>
           </div>
           <div className="flex items-center gap-2 justify-end">
@@ -67,20 +62,11 @@ export default function Header() {
                 </Navbar.Link>
               </Navbar.Collapse>
             </Navbar>
-            <Button
-              className="w-12 h-10"
-              color="light"
-              pill
-              onClick={() => dispatch(toggleTheme())}
-            >
-              {theme === "dark" ? <RiSunLine size={16} /> : <RiMoonLine size={16} />}
+            <Button className="w-12 h-10" color="light" pill onClick={() => dispatch(toggleTheme())}>
+              {theme === "dark" ? <LuSun size={16} /> : <LuMoon size={16} />}
             </Button>
             {currentUser ? (
-              <Dropdown
-                inline
-                size="sm"
-                label={<Avatar rounded img={currentUser.profileImage}></Avatar>}
-              >
+              <Dropdown inline size="sm" label={<Avatar rounded img={currentUser.profileImage}></Avatar>}>
                 <Dropdown.Header>
                   <p className="font-bold mb-1">{currentUser.name}</p>
                   <p>{currentUser.email}</p>

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Sidebar } from "flowbite-react";
-import { AiOutlineUser, AiOutlineLogout } from "react-icons/ai";
+import { LuUser, LuPenSquare, LuLogOut } from "react-icons/lu";
 import { signoutSuccess } from "../redux/user/userSlice";
 
 export default function DashboardSidebar() {
@@ -12,6 +13,7 @@ export default function DashboardSidebar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [tab, setTab] = useState("");
+  const { currentUser } = useSelector((state) => state.user);
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const tabFromUrl = urlParams.get("tab");
@@ -34,18 +36,23 @@ export default function DashboardSidebar() {
   return (
     <Sidebar className="md:w-80 w-full">
       <Sidebar.Items>
-        <Sidebar.ItemGroup>
+        <Sidebar.ItemGroup className="flex flex-col gap-1">
           <Sidebar.Item
             as={Link}
             to="/dashboard?tab=profile"
             active={tab === "profile"}
-            icon={AiOutlineUser}
-            label="User"
+            icon={LuUser}
+            label={currentUser.isAdmin ? "Admin" : "User"}
             labelColor="dark"
           >
             Profile
           </Sidebar.Item>
-          <Sidebar.Item onClick={handleSignout} icon={AiOutlineLogout} className="cursor-pointer">
+          {currentUser.isAdmin && (
+            <Sidebar.Item as={Link} to="/dashboard?tab=posts" active={tab === "posts"} icon={LuPenSquare}>
+              Posts
+            </Sidebar.Item>
+          )}
+          <Sidebar.Item onClick={handleSignout} icon={LuLogOut} className="cursor-pointer">
             Sign out
           </Sidebar.Item>
         </Sidebar.ItemGroup>
