@@ -1,5 +1,9 @@
 import React, { useState } from "react";
+import axios from "axios";
+import Loader from "../components/Loader";
+import { toast } from "react-toastify";
 import { app } from "../firebase";
+import { useNavigate } from "react-router-dom";
 import { getStorage, uploadBytesResumable, ref, getDownloadURL } from "firebase/storage";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
@@ -13,6 +17,9 @@ export default function CreatePost() {
   const [imageUploadProgress, setImageUploadProgress] = useState(0);
   const [imageUploadError, setImageUploadError] = useState(null);
   const [formData, setFormData] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [publishError, setPublishError] = useState(null);
+  const navigate = useNavigate();
   const handleUploadImage = async () => {
     try {
       if (!file) {
@@ -48,26 +55,52 @@ export default function CreatePost() {
     } catch (error) {
       setImageUploadError("Image upload failed");
       setImageUploadProgress(null);
-      console.log(error);
+    }
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("/api/post/create", formData);
+      if (response.data.success) {
+        toast.success(response.data.message);
+        navigate(`/post/${response.data.post.slug}`);
+      }
+    } catch (error) {
+      setPublishError(error.response.data.message);
     }
   };
   return (
     <div className="container mx-auto max-w-[1480px] pl-8 pr-8 py-10">
       <div className="mx-auto max-w-[800px] p-10 bg-white rounded dark:bg-slate-800">
         <h1 className="text-3xl font-bold mb-10">Create post</h1>
+        {publishError && (
+          <Alert color="failure" className="mb-5">
+            {publishError}
+          </Alert>
+        )}
         {imageUploadError && (
           <Alert color="failure" className="mb-5">
             {imageUploadError}
           </Alert>
         )}
-        <form>
+        <form onSubmit={(e) => handleSubmit(e)}>
           <div className="mb-5">
             <Label htmlFor="title" value="Title" className="mb-2 block" />
-            <TextInput id="title" type="text" />
+            <TextInput id="title" type="text" onChange={(e) => setFormData({ ...formData, title: e.target.value })} />
           </div>
           <div className="mb-5">
             <Label htmlFor="category" value="Category" className="mb-2 block" />
-            <Select id="category" defaultValue="javascript">
+            <Select
+              id="category"
+              defaultValue="uncategorized"
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  category: e.target.value,
+                })
+              }
+            >
+              <option value="uncategorized">Uncategorized</option>
               <option value="javascript">JavaScript</option>
               <option value="css">CSS</option>
               <option value="devops">DevOps</option>
@@ -106,10 +139,20 @@ export default function CreatePost() {
             </div>
           </div>
           <div className="mb-5">
-            <ReactQuill theme="snow" className="h-60 mb-16" required />
+            <ReactQuill
+              id="content"
+              theme="snow"
+              className="h-60 mb-16"
+              onChange={(value) =>
+                setFormData({
+                  ...formData,
+                  content: value,
+                })
+              }
+            />
           </div>
-          <Button gradientDuoTone="pinkToOrange" fullSized size="lg">
-            Publish
+          <Button type="submit" gradientDuoTone="pinkToOrange" fullSized size="lg">
+            {loading ? <Loader color="gray" className="mr-2" size="md" /> : "Publish"}
           </Button>
         </form>
       </div>
