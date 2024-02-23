@@ -47,7 +47,7 @@ export default function CreatePost() {
             setImageUploadProgress(null);
             setFormData({
               ...formData,
-              imageUrl: downloadUrl,
+              image: downloadUrl,
             });
           });
         }

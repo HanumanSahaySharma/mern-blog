@@ -131,13 +131,7 @@ export default function Profile() {
       <div className="max-w-[540px] mx-auto w-full">
         <h1 className="text-4xl text-center">Profile</h1>
         <form onSubmit={handleSubmit} className="mt-5">
-          <input
-            hidden
-            type="file"
-            accept="image/*"
-            onChange={handleImageUpload}
-            ref={profileImageRef}
-          />
+          <input hidden type="file" accept="image/*" onChange={handleImageUpload} ref={profileImageRef} />
           <div
             onClick={() => profileImageRef.current.click()}
             className="relative w-40 h-40 mx-auto mb-5 rounded-full shadow-xl"
@@ -156,7 +150,7 @@ export default function Profile() {
                     left: "0px",
                   },
                   path: {
-                    stroke: `rgba(255, 0, 0, ${imageUploadProgess / 100})`,
+                    stroke: `rgba(255, 0, 0, ${imageUploadProgress / 100})`,
                     strokeLinecap: "butt",
                   },
                   text: {
@@ -186,21 +180,11 @@ export default function Profile() {
           )}
           <div className="mb-5">
             <Label htmlFor="username" value="Username" className="mb-2 block" />
-            <TextInput
-              id="username"
-              type="text"
-              defaultValue={currentUser.username}
-              onChange={handleChange}
-            />
+            <TextInput id="username" type="text" defaultValue={currentUser.username} onChange={handleChange} />
           </div>
           <div className="mb-5">
             <Label htmlFor="email" value="Email" className="mb-2 block" />
-            <TextInput
-              id="email"
-              type="email"
-              defaultValue={currentUser.email}
-              onChange={handleChange}
-            />
+            <TextInput id="email" type="email" defaultValue={currentUser.email} onChange={handleChange} />
           </div>
           <div className="mb-5">
             <Label htmlFor="password" value="Password" className="mb-2 block" />
@@ -245,19 +229,12 @@ export default function Profile() {
           <Modal.Header />
           <Modal.Body className="text-center">
             <AiOutlineInfoCircle size="50" color="gray" className="mx-auto" />
-            <p className="text-2xl text-slate-500 mb-10 mt-5">
-              Are you sure want to delete this account?
-            </p>
+            <p className="text-2xl text-slate-500 mb-10 mt-5">Are you sure want to delete this account?</p>
             <div className="flex gap-5">
               <Button fullSized gradientDuoTone="pinkToOrange" onClick={handleDelete}>
                 Delete
               </Button>
-              <Button
-                onClick={() => setConfirmModal(false)}
-                fullSized
-                outline
-                gradientDuoTone="pinkToOrange"
-              >
+              <Button onClick={() => setConfirmModal(false)} fullSized outline gradientDuoTone="pinkToOrange">
                 Cancel
               </Button>
             </div>
