@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Button, Table } from "flowbite-react";
-import { LuPencil, LuTrash } from "react-icons/lu";
+import { Button, Table, Modal } from "flowbite-react";
+import { LuPencil, LuTrash, LuInfo } from "react-icons/lu";
 import { capitalizeText } from "../utils/capitalizeText";
 import Loader from "../components/Loader";
 
@@ -12,6 +13,10 @@ export default function Posts() {
   const [posts, setPosts] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showMore, setShowMore] = useState(true);
+  const [confirmModal, setConfirmModal] = useState(false);
+  const [postIdToDelete, setPostIdToDelete] = useState(null);
+  const [userIdToDelete, setUserIdToDelete] = useState(null);
+
   useEffect(() => {
     async function getPosts() {
       setLoading(true);
@@ -25,24 +30,39 @@ export default function Posts() {
           }
         }
       } catch (error) {
-        console.log(error);
         setLoading(false);
       }
     }
     getPosts();
   }, [currentUser._id]);
+
   const handleShowMore = async () => {
     const startIndex = posts.length;
     try {
       const response = await axios.get(`/api/post/get-posts?userId=${currentUser._id}&startIndex=${startIndex}`);
+      console.log(response.data.post);
       if (response.status === 200) {
         setPosts((prev) => [...prev, ...response.data.posts]);
-        if (response.data.posts.length < 9) {
+        console.log(posts);
+        if (response.data.posts.length < 10) {
           setShowMore(false);
         }
       }
     } catch (error) {
       console.log(error.messsage);
+    }
+  };
+  const handleDelete = async () => {
+    setConfirmModal(false);
+    try {
+      const response = await axios.delete(`/api/post/delete/${postIdToDelete}/${currentUser._id}`);
+      console.log(response);
+      if (response.data.success) {
+        toast.success(response.data.message);
+        setPosts((prev) => prev.filter((post) => post._id !== postIdToDelete));
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
   return (
@@ -89,7 +109,14 @@ export default function Posts() {
                           <Button to={`/post/edit/${post._id}`} as={Link} outline size="xs" gradientMonochrome="info">
                             <LuPencil size="16" />
                           </Button>
-                          <Button size="xs" gradientMonochrome="failure" outline>
+                          <Button
+                            onClick={() => {
+                              setConfirmModal(true), setPostIdToDelete(post._id), setUserIdToDelete(post.userId);
+                            }}
+                            size="xs"
+                            gradientMonochrome="failure"
+                            outline
+                          >
                             <LuTrash size="16" />
                           </Button>
                         </Table.Cell>
@@ -118,6 +145,21 @@ export default function Posts() {
             </>
           )}
         </div>
+        <Modal show={confirmModal} onClose={() => setConfirmModal(false)} popup size="md">
+          <Modal.Header />
+          <Modal.Body className="text-center">
+            <LuInfo size="50" color="gray" className="mx-auto" />
+            <p className="text-2xl text-slate-500 mb-10 mt-5">Are you sure want to delete this post?</p>
+            <div className="flex gap-5">
+              <Button fullSized gradientDuoTone="pinkToOrange" onClick={handleDelete}>
+                Delete
+              </Button>
+              <Button onClick={() => setConfirmModal(false)} fullSized outline gradientDuoTone="pinkToOrange">
+                Cancel
+              </Button>
+            </div>
+          </Modal.Body>
+        </Modal>
       </div>
     </div>
   );

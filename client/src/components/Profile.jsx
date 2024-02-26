@@ -18,7 +18,7 @@ import {
   signoutSuccess,
 } from "../redux/user/userSlice";
 import { useDispatch } from "react-redux";
-import { AiOutlineInfoCircle } from "react-icons/ai";
+import { LuInfo } from "react-icons/lu";
 
 import Loader from "../components/Loader";
 
@@ -228,7 +228,7 @@ export default function Profile() {
         <Modal show={showConfirmModal} onClose={() => setConfirmModal(false)} popup size="md">
           <Modal.Header />
           <Modal.Body className="text-center">
-            <AiOutlineInfoCircle size="50" color="gray" className="mx-auto" />
+            <LuInfo size="50" color="gray" className="mx-auto" />
             <p className="text-2xl text-slate-500 mb-10 mt-5">Are you sure want to delete this account?</p>
             <div className="flex gap-5">
               <Button fullSized gradientDuoTone="pinkToOrange" onClick={handleDelete}>
