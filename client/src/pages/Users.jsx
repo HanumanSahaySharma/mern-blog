@@ -1,48 +1,43 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import { Button, Table, Modal } from "flowbite-react";
-import { LuPencil, LuTrash, LuInfo } from "react-icons/lu";
-import { capitalizeText } from "../utils/capitalizeText";
+import { LuTrash, LuBadgeCheck, LuBadgeX, LuInfo } from "react-icons/lu";
 import Loader from "../components/Loader";
 
-export default function Posts() {
+export default function Users() {
   const { currentUser } = useSelector((state) => state.user);
-  const [posts, setPosts] = useState(null);
+  const [users, setUsers] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showMore, setShowMore] = useState(true);
   const [confirmModal, setConfirmModal] = useState(false);
-  const [postIdToDelete, setPostIdToDelete] = useState(null);
   const [userIdToDelete, setUserIdToDelete] = useState(null);
 
-  useEffect(() => {
-    async function getPosts() {
-      setLoading(true);
-      try {
-        const response = await axios.get(`/api/post/get-posts?userId=${currentUser._id}`);
-        if (response.status === 200) {
-          setPosts(response.data.posts);
-          setLoading(false);
-          if (response.data.posts.length < 10) {
-            setShowMore(false);
-          }
-        }
-      } catch (error) {
+  const getUsers = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("/api/auth/user/get-users");
+      if (response.status === 200) {
+        toast.success("All users fetched successfully.");
+        setUsers(response.data.users);
         setLoading(false);
+        if (response.data.users.length < 10) {
+          setShowMore(false);
+        }
       }
+    } catch (error) {
+      console.log(error);
     }
-    getPosts();
-  }, [currentUser._id]);
+  };
 
   const handleShowMore = async () => {
-    const startIndex = posts.length;
+    const startIndex = users.length;
     try {
-      const response = await axios.get(`/api/post/get-posts?userId=${currentUser._id}&startIndex=${startIndex}`);
+      const response = await axios.get(`/api/auth/user/get-users?startIndex=${startIndex}`);
       if (response.status === 200) {
-        setPosts((prev) => [...prev, ...response.data.posts]);
-        if (response.data.posts.length < 10) {
+        setUsers((prev) => [...prev, ...response.data.users]);
+        if (response.data.users.length < 10) {
           setShowMore(false);
         }
       }
@@ -50,27 +45,30 @@ export default function Posts() {
       console.log(error.messsage);
     }
   };
+
   const handleDelete = async () => {
     setConfirmModal(false);
     try {
-      const response = await axios.delete(`/api/post/delete/${postIdToDelete}/${currentUser._id}`);
+      const response = await axios.delete(`/api/auth/user/delete/${userIdToDelete}`);
       console.log(response);
       if (response.data.success) {
         toast.success(response.data.message);
-        setPosts((prev) => prev.filter((post) => post._id !== postIdToDelete));
+        setUsers((users) => users.filter((user) => user._id !== userIdToDelete));
       }
     } catch (error) {
-      console.log(error);
+      console.log(error.response.data);
     }
   };
+
+  useEffect(() => {
+    getUsers();
+  }, [currentUser._id]);
+
   return (
     <div className="p-10 w-full">
       <div className="mx-auto w-full">
         <div className="flex justify-between mb-5">
-          <h1 className="text-2xl md:text-4xl">Post</h1>
-          <Button as={Link} to="/post/create-post" gradientDuoTone="pinkToOrange" outline>
-            Create Post
-          </Button>
+          <h1 className="text-2xl md:text-4xl">Users</h1>
         </div>
         <div className="overflow-x-auto scrollbar scrollbar-track-slate-800 scrollbar-thumb-slate-500">
           {loading ? (
@@ -81,35 +79,34 @@ export default function Posts() {
             <>
               <Table hoverable className="text-slate-800">
                 <Table.Head>
-                  <Table.HeadCell>Date</Table.HeadCell>
-                  <Table.HeadCell>Image</Table.HeadCell>
-                  <Table.HeadCell>Title</Table.HeadCell>
-                  <Table.HeadCell>Category</Table.HeadCell>
-                  <Table.HeadCell>Action</Table.HeadCell>
+                  <Table.HeadCell>Created Date</Table.HeadCell>
+                  <Table.HeadCell>Avatar</Table.HeadCell>
+                  <Table.HeadCell>Username</Table.HeadCell>
+                  <Table.HeadCell>Email</Table.HeadCell>
+                  <Table.HeadCell>Admin</Table.HeadCell>
+                  <Table.HeadCell>Delete</Table.HeadCell>
                 </Table.Head>
                 <Table.Body className="divide-y">
-                  {posts?.length > 0 ? (
-                    posts.map((post) => (
-                      <Table.Row key={post._id} className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                        <Table.Cell>{new Date(post.updatedAt).toLocaleDateString()}</Table.Cell>
+                  {users?.length > 0 ? (
+                    users.map((user) => (
+                      <Table.Row key={user._id} className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                        <Table.Cell>{new Date(user.updatedAt).toLocaleDateString()}</Table.Cell>
                         <Table.Cell>
-                          <Link to={post.slug}>
-                            <img src={post.image} alt={post.title} className="w-20" />
-                          </Link>
+                          <img src={user.profileImage} alt={user.name} className="w-10" />
                         </Table.Cell>
+                        <Table.Cell>{user.username}</Table.Cell>
+                        <Table.Cell>{user.email}</Table.Cell>
                         <Table.Cell>
-                          <Link className="font-semibold" to={`/post/${post.slug}`}>
-                            {post.title}
-                          </Link>
+                          {user.isAdmin ? (
+                            <LuBadgeCheck size="24" className="text-lime-600" />
+                          ) : (
+                            <LuBadgeX size="24" className="text-red-600" />
+                          )}
                         </Table.Cell>
-                        <Table.Cell>{capitalizeText(post.category)}</Table.Cell>
                         <Table.Cell className="flex gap-2">
-                          <Button to={`/post/edit/${post._id}`} as={Link} outline size="xs" gradientMonochrome="info">
-                            <LuPencil size="16" />
-                          </Button>
                           <Button
                             onClick={() => {
-                              setConfirmModal(true), setPostIdToDelete(post._id), setUserIdToDelete(post.userId);
+                              setConfirmModal(true), setUserIdToDelete(user._id);
                             }}
                             size="xs"
                             gradientMonochrome="failure"
@@ -123,7 +120,7 @@ export default function Posts() {
                   ) : (
                     <Table.Row>
                       <Table.Cell>
-                        <p>You have not posts yet!</p>
+                        <p>No users available</p>
                       </Table.Cell>
                     </Table.Row>
                   )}
@@ -147,7 +144,7 @@ export default function Posts() {
           <Modal.Header />
           <Modal.Body className="text-center">
             <LuInfo size="50" color="gray" className="mx-auto" />
-            <p className="text-2xl text-slate-500 mb-10 mt-5">Are you sure want to delete this post?</p>
+            <p className="text-2xl text-slate-500 mb-10 mt-5">Are you sure want to delete this user?</p>
             <div className="flex gap-5">
               <Button fullSized gradientDuoTone="pinkToOrange" onClick={handleDelete}>
                 Delete

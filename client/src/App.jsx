@@ -20,6 +20,7 @@ import SignUp from "./pages/SignUp";
 import Dashboard from "./pages/Dashboard";
 import CreatePost from "./pages/CreatePost";
 import EditPost from "./pages/EditPost";
+import Users from "./pages/Users";
 
 export default function App() {
   return (
@@ -37,6 +38,7 @@ export default function App() {
           <Route element={<OnlyAdminPrivateRoutes />}>
             <Route path="post/create-post" element={<CreatePost />} />
             <Route path="post/edit/:postId" element={<EditPost />} />
+            <Route path="/users" element={<Users />} />
           </Route>
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
