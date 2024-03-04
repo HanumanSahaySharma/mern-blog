@@ -19,6 +19,7 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Dashboard from "./pages/Dashboard";
 import CreatePost from "./pages/CreatePost";
+import EditPost from "./pages/EditPost";
 
 export default function App() {
   return (
@@ -34,7 +35,8 @@ export default function App() {
             <Route path="/dashboard" element={<Dashboard />} />
           </Route>
           <Route element={<OnlyAdminPrivateRoutes />}>
-            <Route path="/create-post" element={<CreatePost />} />
+            <Route path="post/create-post" element={<CreatePost />} />
+            <Route path="post/edit/:postId" element={<EditPost />} />
           </Route>
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />

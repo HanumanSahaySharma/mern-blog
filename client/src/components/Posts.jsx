@@ -70,14 +70,14 @@ export default function Posts() {
       <div className="mx-auto w-full">
         <div className="flex justify-between mb-5">
           <h1 className="text-2xl md:text-4xl">Post</h1>
-          <Button as={Link} to="/create-post" gradientDuoTone="pinkToOrange" outline>
+          <Button as={Link} to="/post/create-post" gradientDuoTone="pinkToOrange" outline>
             Create Post
           </Button>
         </div>
         <div className="overflow-x-auto scrollbar scrollbar-track-slate-800 scrollbar-thumb-slate-500">
           {loading ? (
             <div className="bg-white p-5 flex justify-center">
-              <Loader color="failure" className="mr-2" size="xl" />
+              <Loader color="gray" className="mr-2" size="xl" />
             </div>
           ) : (
             <>
