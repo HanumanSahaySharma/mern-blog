@@ -21,6 +21,7 @@ import Dashboard from "./pages/Dashboard";
 import CreatePost from "./pages/CreatePost";
 import EditPost from "./pages/EditPost";
 import Users from "./pages/Users";
+import PostPage from "./pages/PostPage";
 
 export default function App() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/projects" element={<Projects />} />
+          <Route path="/post/:slug" element={<PostPage />} />
           <Route element={<PrivateRoutes />}>
             <Route path="/dashboard" element={<Dashboard />} />
           </Route>
