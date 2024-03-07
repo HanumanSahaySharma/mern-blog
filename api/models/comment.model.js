@@ -15,7 +15,7 @@ const commentSchema = new Schema(
       required: true,
     },
     likes: {
-      types: Array,
+      type: Array,
       default: [],
     },
     numberOfLikes: {

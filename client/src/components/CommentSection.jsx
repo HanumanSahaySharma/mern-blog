@@ -1,16 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Alert, Button, Textarea } from "flowbite-react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import Loader from "./Loader";
+import Comments from "./Comments";
+
 export default function CommentSection({ postId }) {
   const { currentUser } = useSelector((state) => state.user);
   const [loading, setLoading] = useState(false);
   const [comment, setComment] = useState("");
   const [error, setError] = useState(null);
   const userId = currentUser._id;
+
+  const [comments, setComments] = useState([]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -24,12 +29,27 @@ export default function CommentSection({ postId }) {
         setLoading(false);
         setComment("");
         toast.success(response.data.message);
+        setComments([response.data.comment, ...comments]);
       }
     } catch (error) {
       setLoading(false);
       setError(error.response.data.message);
     }
   };
+
+  useEffect(() => {
+    const getComments = async () => {
+      try {
+        const response = await axios.get(`/api/comment/get-comments/${postId}`);
+        if (response.status === 200) {
+          setComments(response.data.comments);
+        }
+      } catch (error) {
+        setError(error.response.data.message);
+      }
+    };
+    getComments();
+  }, [postId]);
   return (
     <div className="mt-5 mx-auto max-w-[740px]">
       {currentUser ? (
@@ -52,7 +72,7 @@ export default function CommentSection({ postId }) {
         </div>
       )}
       {currentUser && (
-        <form onSubmit={handleSubmit} className="border border-slate-300 p-5 my-4 rounded-lg">
+        <form onSubmit={handleSubmit} className="border border-slate-300 p-5 my-4 rounded-lg mb-10">
           {error && (
             <Alert className="mb-5 py-2.5" color="failure">
               {error}
@@ -68,11 +88,23 @@ export default function CommentSection({ postId }) {
           ></Textarea>
           <div className="flex items-center justify-between mt-5">
             <p className="text-slate-500 text-sm">{250 - comment.length} characters remaining</p>
-            <Button type="submit" outline gradientDuoTone="pinkToOrange" className="mb-5">
+            <Button type="submit" outline gradientDuoTone="pinkToOrange">
               {loading ? <Loader color="gray" className="mr-2" size="md" /> : "Submit"}
             </Button>
           </div>
         </form>
+      )}
+      {comments.length > 0 ? (
+        <>
+          <h3 className="font-medium">
+            Comments <span className="text-sm border border-slate-300 px-2 py-1 rounded">{comments.length}</span>
+          </h3>
+          {comments.map((comment) => (
+            <Comments comment={comment} key={comment._id} />
+          ))}
+        </>
+      ) : (
+        <p className="text-sm text-slate-500">No comments yet</p>
       )}
     </div>
   );
