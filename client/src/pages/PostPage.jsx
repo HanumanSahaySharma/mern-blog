@@ -5,6 +5,7 @@ import { Badge, Button } from "flowbite-react";
 import { LuMoveLeft } from "react-icons/lu";
 import { capitalizeText } from "../utils/capitalizeText";
 import Loader from "../components/Loader";
+import CommentSection from "../components/CommentSection";
 
 export default function PostPage() {
   const { slug } = useParams();
@@ -23,7 +24,6 @@ export default function PostPage() {
   useEffect(() => {
     getPost();
   }, [slug]);
-  console.log(post);
   return (
     <div className="container mx-auto max-w-[1480px] pl-8 pr-8 py-10">
       <div className="mx-auto  p-10 bg-white rounded dark:bg-slate-800">
@@ -48,18 +48,23 @@ export default function PostPage() {
                 {capitalizeText(post?.category)}
               </Badge>
             )}
-            <h1 className="text-3xl font-bold mb-5">{post && post.title}</h1>
-            <div className="mb-5 text-slate-600 flex gap-10 border-b border-b-slate-300 pb-5">
-              <span>{new Date(post?.updatedAt).toLocaleDateString()}</span>
-              <span>{post && (post.content.length / 1000).toFixed(0)} mins read</span>
-            </div>
-
             {post && (
-              <div className="p-2 border border-slate-300 rounded-lg mb-5">
-                <img src={post.image} className="object-cover w-full" />
+              <div className="flex mb-10">
+                <div className="p-2 border border-slate-300 mr-10">
+                  <img src={post.image} className="object-cover" />
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold mb-5">{post && post.title}</h1>
+                  <div className="mb-5 text-slate-600 flex gap-4">
+                    <span>{new Date(post?.updatedAt).toLocaleDateString()}</span>
+                    <span>{post && (post.content.length / 1000).toFixed(0)} mins read</span>
+                  </div>
+                </div>
               </div>
             )}
+
             <div dangerouslySetInnerHTML={{ __html: post && post.content }}></div>
+            <CommentSection postId={post?._id} />
           </>
         )}
       </div>
