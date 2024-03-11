@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Alert, Button, Textarea } from "flowbite-react";
+import { Alert, Button, Textarea, Modal } from "flowbite-react";
+import { LuInfo } from "react-icons/lu";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -12,6 +13,8 @@ export default function CommentSection({ postId }) {
   const [loading, setLoading] = useState(false);
   const [comment, setComment] = useState("");
   const [error, setError] = useState(null);
+  const [confirmModal, setConfirmModal] = useState(false);
+  const [commentIdToDelete, setCommentIdToDelete] = useState(null);
   const userId = currentUser._id;
 
   const [comments, setComments] = useState([]);
@@ -69,6 +72,18 @@ export default function CommentSection({ postId }) {
       });
       if (response.status === 200) {
         setComments(comments.map((c) => (c._id === comment._id ? { ...c, content: editedContent } : c)));
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const handleDelete = async (commentId) => {
+    try {
+      const response = await axios.delete(`/api/comment/deleteComment/${commentId}`);
+      if (response.status === 200) {
+        setComments(comments.filter((comment) => comment._id !== commentId));
+        setConfirmModal(false);
       }
     } catch (error) {
       console.log(error.message);
@@ -139,8 +154,32 @@ export default function CommentSection({ postId }) {
             Comments <span className="text-sm border border-slate-300 px-2 py-1 rounded">{comments.length}</span>
           </h3>
           {comments.map((comment) => (
-            <Comments comment={comment} key={comment._id} onLike={handleLike} onEdit={handleEdit} />
+            <Comments
+              comment={comment}
+              key={comment._id}
+              onLike={handleLike}
+              onEdit={handleEdit}
+              onDelete={(commentId) => {
+                setConfirmModal(true);
+                setCommentIdToDelete(commentId);
+              }}
+            />
           ))}
+          <Modal show={confirmModal} onClose={() => setConfirmModal(false)} popup size="md">
+            <Modal.Header />
+            <Modal.Body className="text-center">
+              <LuInfo size="50" color="gray" className="mx-auto" />
+              <p className="text-2xl text-slate-500 mb-10 mt-5">Are you sure want to delete this comment?</p>
+              <div className="flex gap-5">
+                <Button fullSized gradientDuoTone="pinkToOrange" onClick={() => handleDelete(commentIdToDelete)}>
+                  Delete
+                </Button>
+                <Button onClick={() => setConfirmModal(false)} fullSized outline gradientDuoTone="pinkToOrange">
+                  Cancel
+                </Button>
+              </div>
+            </Modal.Body>
+          </Modal>
         </>
       ) : (
         <p className="text-sm text-slate-500">No comments yet</p>

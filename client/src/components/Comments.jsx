@@ -1,12 +1,11 @@
 import axios from "axios";
 import moment from "moment";
 import { Button, Textarea } from "flowbite-react";
-import Loader from "../components/Loader";
 import React, { useEffect, useState } from "react";
-import { LuThumbsUp, LuPencil } from "react-icons/lu";
+import { LuThumbsUp, LuPencil, LuTrash2 } from "react-icons/lu";
 import { useSelector } from "react-redux";
 
-export default function Comments({ comment, onLike, onEdit }) {
+export default function Comments({ comment, onLike, onEdit, onDelete }) {
   const [user, setUser] = useState({});
   const [isEditing, setEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(comment.content);
@@ -68,10 +67,16 @@ export default function Comments({ comment, onLike, onEdit }) {
               </span>
             </Button>
             {currentUser.isAdmin && currentUser._id === comment.userId && (
-              <Button color="light" onClick={() => setEditing(true)} size="sm">
-                <LuPencil className={`mr-2`} />
-                <span className="text-slate-700">Edit</span>
-              </Button>
+              <>
+                <Button color="light" onClick={() => setEditing(true)} size="sm">
+                  <LuPencil className="mr-2" />
+                  <span className="text-slate-700">Edit</span>
+                </Button>
+                <Button color="light" onClick={() => onDelete(comment._id)} size="sm">
+                  <LuTrash2 className="mr-2" />
+                  <span className="text-slate-700">Delete</span>
+                </Button>
+              </>
             )}
           </div>
         )}
