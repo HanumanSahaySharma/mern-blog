@@ -37,6 +37,31 @@ export default function CommentSection({ postId }) {
     }
   };
 
+  const handleLike = async (commentId) => {
+    try {
+      const response = await axios.put(`/api/comment/likeComment/${commentId}`);
+      if (!currentUser) {
+        navigate("/signin");
+        return;
+      }
+      if (response.status === 200) {
+        setComments(
+          comments.map((comment) =>
+            comment._id === commentId
+              ? {
+                  ...comment,
+                  likes: response.data.likes,
+                  numberOfLikes: response.data.likes.length,
+                }
+              : comment
+          )
+        );
+      }
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
   useEffect(() => {
     const getComments = async () => {
       try {
@@ -100,7 +125,7 @@ export default function CommentSection({ postId }) {
             Comments <span className="text-sm border border-slate-300 px-2 py-1 rounded">{comments.length}</span>
           </h3>
           {comments.map((comment) => (
-            <Comments comment={comment} key={comment._id} />
+            <Comments comment={comment} key={comment._id} onLike={handleLike} />
           ))}
         </>
       ) : (
