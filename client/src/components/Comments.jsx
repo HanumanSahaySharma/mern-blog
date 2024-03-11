@@ -1,12 +1,15 @@
 import axios from "axios";
 import moment from "moment";
-import { Button } from "flowbite-react";
+import { Button, Textarea } from "flowbite-react";
+import Loader from "../components/Loader";
 import React, { useEffect, useState } from "react";
-import { LuThumbsUp } from "react-icons/lu";
+import { LuThumbsUp, LuPencil } from "react-icons/lu";
 import { useSelector } from "react-redux";
 
-export default function Comments({ comment, onLike }) {
+export default function Comments({ comment, onLike, onEdit }) {
   const [user, setUser] = useState({});
+  const [isEditing, setEditing] = useState(false);
+  const [editedContent, setEditedContent] = useState(comment.content);
   const userId = comment.userId;
   const { currentUser } = useSelector((state) => state.user);
   useEffect(() => {
@@ -20,31 +23,58 @@ export default function Comments({ comment, onLike }) {
     };
     getUser();
   }, [comment]);
+
+  const handleEdit = (e) => {
+    e.preventDefault();
+    onEdit(comment, editedContent);
+    setEditing(false);
+  };
   return (
     <div className="py-5 border-b border-b-slate-300 flex">
       <img src={user.profileImage} className="w-10 rounded-full self-start" />
-      <div className="pl-5">
+      <div className="pl-5 flex-grow">
         <p className="font-bold mb-2 text-sm">
           <span className="text-orange-500">@{user.username}</span>
           <span className="text-slate-500 ml-2 font-normal">{moment(comment.createdAt).fromNow()}</span>
         </p>
-        <p className="text-slate-600">{comment.content}</p>
-        <div className="flex items-center gap-2 pt-2">
-          <Button
-            color="light"
-            onClick={() => onLike(comment._id)}
-            size="sm"
-            className={`border-none hover:bg-orange-500 enabled:hover:bg-orange-500 enabled:hover:text-white ${
-              currentUser && comment.likes.includes(currentUser._id) ? "bg-orange-500 text-white" : ""
-            }`}
-          >
-            <LuThumbsUp />
-          </Button>
-          <span className="text-slate-600">
-            {comment.numberOfLikes}
-            {comment.numberOfLikes > 1 ? " likes" : " like"}
-          </span>
-        </div>
+        {!isEditing && <p className="text-slate-700">{comment.content}</p>}
+        {isEditing ? (
+          <form onSubmit={handleEdit}>
+            <Textarea
+              value={editedContent}
+              onChange={(e) => setEditedContent(e.target.value)}
+              rows={4}
+              maxLength={250}
+              className="outline-0 border border-slate-300 focus:border-pink-300 w-full"
+            ></Textarea>
+            <div className="flex justify-end gap-2 pt-2">
+              <Button size="sm" type="submit" color="light">
+                Submit
+              </Button>
+              <Button size="sm" type="button" color="light" onClick={() => setEditing(false)}>
+                Cancel
+              </Button>
+            </div>
+          </form>
+        ) : (
+          <div className="flex items-center gap-2 mt-2">
+            <Button color="light" onClick={() => onLike(comment._id)} size="sm">
+              <LuThumbsUp
+                className={`mr-2 ${currentUser && comment.likes.includes(currentUser._id) ? "text-orange-500" : ""}`}
+              />
+              <span className="text-slate-700">
+                {comment.numberOfLikes}
+                {comment.numberOfLikes > 1 ? " likes" : " like"}
+              </span>
+            </Button>
+            {currentUser.isAdmin && currentUser._id === comment.userId && (
+              <Button color="light" onClick={() => setEditing(true)} size="sm">
+                <LuPencil className={`mr-2`} />
+                <span className="text-slate-700">Edit</span>
+              </Button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

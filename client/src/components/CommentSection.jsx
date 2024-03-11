@@ -62,6 +62,19 @@ export default function CommentSection({ postId }) {
     }
   };
 
+  const handleEdit = async (comment, editedContent) => {
+    try {
+      const response = await axios.put(`/api/comment/editComment/${comment._id}`, {
+        content: editedContent,
+      });
+      if (response.status === 200) {
+        setComments(comments.map((c) => (c._id === comment._id ? { ...c, content: editedContent } : c)));
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   useEffect(() => {
     const getComments = async () => {
       try {
@@ -75,6 +88,7 @@ export default function CommentSection({ postId }) {
     };
     getComments();
   }, [postId]);
+
   return (
     <div className="mt-5 mx-auto max-w-[740px]">
       {currentUser ? (
@@ -125,7 +139,7 @@ export default function CommentSection({ postId }) {
             Comments <span className="text-sm border border-slate-300 px-2 py-1 rounded">{comments.length}</span>
           </h3>
           {comments.map((comment) => (
-            <Comments comment={comment} key={comment._id} onLike={handleLike} />
+            <Comments comment={comment} key={comment._id} onLike={handleLike} onEdit={handleEdit} />
           ))}
         </>
       ) : (
