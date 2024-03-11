@@ -6,6 +6,7 @@ import { LuMoveLeft } from "react-icons/lu";
 import { capitalizeText } from "../utils/capitalizeText";
 import Loader from "../components/Loader";
 import CommentSection from "../components/CommentSection";
+import RecentArticles from "../components/RecentArticles";
 
 export default function PostPage() {
   const { slug } = useParams();
@@ -65,6 +66,7 @@ export default function PostPage() {
 
             <div dangerouslySetInnerHTML={{ __html: post && post.content }}></div>
             <CommentSection postId={post?._id} />
+            <RecentArticles />
           </>
         )}
       </div>
