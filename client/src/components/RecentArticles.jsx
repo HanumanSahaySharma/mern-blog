@@ -18,7 +18,7 @@ export default function RecentPosts() {
     getArticles();
   }, []);
   return (
-    <div className="my-10">
+    <div className="w-full">
       <h2 className="font-bold text-2xl">Recent articles</h2>
       {articles && (
         <div className="grid grid-cols-3 gap-4 mt-5">
