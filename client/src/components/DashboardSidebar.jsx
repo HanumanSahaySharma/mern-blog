@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Sidebar } from "flowbite-react";
-import { LuUser, LuPenSquare, LuUsers, LuLogOut } from "react-icons/lu";
+import { LuUser, LuPenSquare, LuUsers, LuLogOut, LuMessagesSquare } from "react-icons/lu";
 import { signoutSuccess } from "../redux/user/userSlice";
 
 export default function DashboardSidebar() {
@@ -54,6 +54,9 @@ export default function DashboardSidebar() {
               </Sidebar.Item>
               <Sidebar.Item as={Link} to="/dashboard?tab=users" active={tab === "users"} icon={LuUsers}>
                 Users
+              </Sidebar.Item>
+              <Sidebar.Item as={Link} to="/dashboard?tab=comments" active={tab === "comments"} icon={LuMessagesSquare}>
+                Comments
               </Sidebar.Item>
             </>
           )}
