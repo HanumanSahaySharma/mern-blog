@@ -9,7 +9,7 @@ import axios from "axios";
 export default function DashboardComments() {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [showMore, setShowMore] = useState(true);
+  const [showMore, setShowMore] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
   const [commentIdToDelete, setCommentIdToDelete] = useState(null);
   const getComments = async () => {
@@ -21,6 +21,8 @@ export default function DashboardComments() {
         setLoading(false);
         if (response.data.comments.length < 10) {
           setShowMore(false);
+        } else {
+          setShowMore(true);
         }
       }
     } catch (error) {

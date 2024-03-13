@@ -80,9 +80,6 @@ export default function Header() {
                 <Navbar.Link as={Link} to="/about" active={path === "/about"}>
                   About
                 </Navbar.Link>
-                <Navbar.Link as={Link} to="/projects" active={path === "/projects"}>
-                  Projects
-                </Navbar.Link>
               </Navbar.Collapse>
             </Navbar>
             <Button className="w-12 h-10" color="light" pill onClick={() => dispatch(toggleTheme())}>
