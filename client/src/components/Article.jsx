@@ -5,11 +5,14 @@ import { capitalizeText } from "../utils/capitalizeText";
 
 export default function Article({ article }) {
   return (
-    <div className="border border-slate-300 rounded-lg overflow-hidden" key={article._id}>
+    <div className="border border-slate-300 rounded-lg overflow-hidden bg-white" key={article._id}>
       <Link to={`/post/${article.slug}`}>
-        <div className="w-full h-40 bg-contain" style={{ backgroundImage: `url(${article.image})` }}></div>
+        <div
+          className="w-full h-60"
+          style={{ backgroundImage: `url(${article.image})`, backgroundRepeat: "no-repeat", backgroundSize: "cover" }}
+        ></div>
       </Link>
-      <div className="p-4 bg-white">
+      <div className="p-8">
         <h3 className="font-semibold text-xl mb-2">
           <Link to={`/post/${article.slug}`}>{article.title}</Link>
         </h3>
@@ -22,7 +25,7 @@ export default function Article({ article }) {
         ></div>
         <Link
           to={`/post/${article.slug}`}
-          className="px-4 py-3 rounded text-white text-sm font-semibold bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-800"
+          className="inline-flex px-4 py-3 rounded text-white text-sm font-semibold bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-800"
         >
           Read more
         </Link>

@@ -6,7 +6,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // Import Components
-import Header from "./components/header";
+import Header from "./components/Header";
 import Footer from "./components/Footer";
 import PrivateRoutes from "./components/PrivateRoutes";
 import OnlyAdminPrivateRoutes from "./components/OnlyAdminPrivateRoutes";
@@ -22,6 +22,7 @@ import CreatePost from "./pages/CreatePost";
 import EditPost from "./pages/EditPost";
 import Users from "./pages/Users";
 import PostPage from "./pages/PostPage";
+import Search from "./pages/Search";
 
 export default function App() {
   return (
@@ -44,6 +45,7 @@ export default function App() {
           </Route>
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/search" element={<Search />} />
         </Routes>
       </main>
       <Footer />

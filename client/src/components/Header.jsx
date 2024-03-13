@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -14,6 +14,8 @@ export default function Header() {
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
   const { theme } = useSelector((state) => state.theme);
+  const [searchTerm, setSearchTerm] = useState("");
+  const location = useLocation();
   const handleSignout = async () => {
     try {
       const response = await axios.post("/api/auth/user/signout");
@@ -26,6 +28,20 @@ export default function Header() {
       console.log(error.response.data.message);
     }
   };
+  const handleSearchTerm = (e) => {
+    e.preventDefault();
+    const urlParams = new URLSearchParams(location.search);
+    urlParams.set("searchTerm", searchTerm);
+    const searchQuery = urlParams.toString();
+    navigate(`/search?${searchQuery}`);
+  };
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const searchTermFromUrl = urlParams.get("searchTerm");
+    if (searchTermFromUrl) {
+      setSearchTerm(searchTermFromUrl);
+    }
+  }, [location.search]);
   return (
     <header className="w-full bg-white dark:text-white border-b border-b-slate-300 dark:bg-gray-800 dark:border-b-gray-700">
       <div className="container mx-auto max-w-[1480px] pl-8 pr-8">
@@ -40,8 +56,15 @@ export default function Header() {
               </span>
               Bloggy
             </Link>
-            <form className="hidden lg:block w-2/4">
-              <TextInput className="w-full" type="text" placeholder="Search..." rightIcon={LuSearch} />
+            <form onSubmit={handleSearchTerm} className="hidden lg:block w-2/4">
+              <TextInput
+                className="w-full"
+                type="text"
+                placeholder="Search..."
+                rightIcon={LuSearch}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </form>
             <Button className="w-12 h-10 block lg:hidden" color="gray" pill>
               <LuSearch />
